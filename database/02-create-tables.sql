@@ -1,4 +1,4 @@
--- Active: 1772299351599@@127.0.0.1@5432@bootcamp_project_db@public
+-- Active: 1778441286099@@gondola.proxy.rlwy.net@25356@bootcamp_project_db@public
 -- ============================================
 -- 02: Create Tables
 -- Run this script connected to bootcamp_project_db.

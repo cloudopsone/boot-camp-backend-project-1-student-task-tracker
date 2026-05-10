@@ -1,3 +1,4 @@
+-- Active: 1778441286099@@gondola.proxy.rlwy.net@25356@bootcamp_project_db@public
 -- ============================================
 -- 01: Create Database and Application User
 -- Run this script as the PostgreSQL superuser (postgres).
