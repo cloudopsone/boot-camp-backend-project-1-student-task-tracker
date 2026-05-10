@@ -3,6 +3,7 @@ package com.bootcamp.tasktracker.controller;
 import com.bootcamp.tasktracker.dto.TaskRequest;
 import com.bootcamp.tasktracker.dto.TaskResponse;
 import com.bootcamp.tasktracker.service.TaskService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,25 +21,31 @@ import jakarta.validation.Valid;
 import java.util.List;
 
 @Slf4j
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/tasks")
 public class TaskController {
     
     private final TaskService taskService;
     
-    public TaskController(TaskService taskService) {
-        this.taskService = taskService;
-    }
-    
     @GetMapping
     public ResponseEntity<List<TaskResponse>> getAllTasks(
+            @RequestParam(required = false) Long boardId,
             @RequestParam(required = false) String status) {
-        log.info("GET /api/tasks - status: {}", status);
+        log.info("GET /api/tasks - boardId: {}, status: {}", boardId, status);
         
         List<TaskResponse> tasks;
-        if (status != null && !status.isEmpty()) {
+        if (boardId != null && status != null && !status.isEmpty()) {
+            // Filter by both boardId and status
+            tasks = taskService.getTasksByBoardAndStatus(boardId, status);
+        } else if (boardId != null) {
+            // Filter by boardId only
+            tasks = taskService.getTasksByBoard(boardId);
+        } else if (status != null && !status.isEmpty()) {
+            // Filter by status only
             tasks = taskService.getTasksByStatus(status);
         } else {
+            // Get all tasks
             tasks = taskService.getAllTasks();
         }
         

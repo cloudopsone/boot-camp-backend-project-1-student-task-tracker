@@ -6,6 +6,7 @@ import com.bootcamp.tasktracker.entity.AppUser;
 import com.bootcamp.tasktracker.entity.ProjectBoard;
 import com.bootcamp.tasktracker.repository.AppUserRepository;
 import com.bootcamp.tasktracker.repository.ProjectBoardRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,17 +15,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j
+@RequiredArgsConstructor
 @Service
 public class BoardService {
     
     private final ProjectBoardRepository boardRepository;
     private final AppUserRepository userRepository;
-    
-    public BoardService(ProjectBoardRepository boardRepository,
-                       AppUserRepository userRepository) {
-        this.boardRepository = boardRepository;
-        this.userRepository = userRepository;
-    }
     
     public List<BoardResponse> getAllBoards() {
         log.info("Fetching all boards");

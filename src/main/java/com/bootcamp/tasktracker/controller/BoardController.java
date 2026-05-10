@@ -2,7 +2,10 @@ package com.bootcamp.tasktracker.controller;
 
 import com.bootcamp.tasktracker.dto.BoardRequest;
 import com.bootcamp.tasktracker.dto.BoardResponse;
+import com.bootcamp.tasktracker.dto.TaskResponse;
 import com.bootcamp.tasktracker.service.BoardService;
+import com.bootcamp.tasktracker.service.TaskService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,15 +22,13 @@ import jakarta.validation.Valid;
 import java.util.List;
 
 @Slf4j
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/boards")
 public class BoardController {
 
     private final BoardService boardService;
-    
-    public BoardController(BoardService boardService) {
-        this.boardService = boardService;
-    }
+    private final TaskService taskService;
     
     @GetMapping
     public ResponseEntity<List<BoardResponse>> getAllBoards() {
@@ -39,6 +40,12 @@ public class BoardController {
     public ResponseEntity<BoardResponse> getBoardById(@PathVariable Long id) {
         log.info("GET /api/boards/{}", id);
         return ResponseEntity.ok(boardService.getBoardById(id));
+    }
+    
+    @GetMapping("/{boardId}/tasks")
+    public ResponseEntity<List<TaskResponse>> getTasksByBoard(@PathVariable Long boardId) {
+        log.info("GET /api/boards/{}/tasks", boardId);
+        return ResponseEntity.ok(taskService.getTasksByBoard(boardId));
     }
     
     @PostMapping

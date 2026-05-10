@@ -39,4 +39,4 @@ out/
 
 *.log
 *.csv
-src/.DS_Store
+*.DS_Store

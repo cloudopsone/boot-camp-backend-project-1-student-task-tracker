@@ -8,6 +8,7 @@ import com.bootcamp.tasktracker.entity.TaskItem;
 import com.bootcamp.tasktracker.repository.AppUserRepository;
 import com.bootcamp.tasktracker.repository.ProjectBoardRepository;
 import com.bootcamp.tasktracker.repository.TaskItemRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,20 +17,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j
+@RequiredArgsConstructor
 @Service
 public class TaskService {
     
     private final TaskItemRepository taskRepository;
     private final ProjectBoardRepository boardRepository;
     private final AppUserRepository userRepository;
-    
-    public TaskService(TaskItemRepository taskRepository, 
-                      ProjectBoardRepository boardRepository,
-                      AppUserRepository userRepository) {
-        this.taskRepository = taskRepository;
-        this.boardRepository = boardRepository;
-        this.userRepository = userRepository;
-    }
     
     public List<TaskResponse> getAllTasks() {
         log.info("Fetching all tasks");
@@ -48,6 +42,13 @@ public class TaskService {
     public List<TaskResponse> getTasksByStatus(String status) {
         log.info("Fetching tasks with status: {}", status);
         return taskRepository.findByStatus(status).stream()
+                .map(this::toResponse)
+                .collect(Collectors.toList());
+    }
+    
+    public List<TaskResponse> getTasksByBoardAndStatus(Long boardId, String status) {
+        log.info("Fetching tasks for board: {} with status: {}", boardId, status);
+        return taskRepository.findByBoardIdAndStatus(boardId, status).stream()
                 .map(this::toResponse)
                 .collect(Collectors.toList());
     }
