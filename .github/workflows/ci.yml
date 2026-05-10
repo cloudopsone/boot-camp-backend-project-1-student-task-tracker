@@ -42,6 +42,13 @@ jobs:
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
           restore-keys: ${{ runner.os }}-gradle-
 
+      - name: Initialize Database
+        env:
+          PGPASSWORD: ChangeMe123!
+        run: |
+          psql -h localhost -U bootcamp_app_user -d bootcamp_project_db -f database/02-create-tables.sql
+          psql -h localhost -U bootcamp_app_user -d bootcamp_project_db -f database/03-sample-data.sql
+
       - name: Build and Test
         env:
           SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/bootcamp_project_db
