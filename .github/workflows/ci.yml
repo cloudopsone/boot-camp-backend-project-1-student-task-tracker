@@ -1,0 +1,50 @@
+name: Backend CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  build-and-test:
+    name: Build & Test
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:18
+        env:
+          POSTGRES_DB: bootcamp_project_db
+          POSTGRES_USER: bootcamp_app_user
+          POSTGRES_PASSWORD: ChangeMe123!
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U bootcamp_app_user -d bootcamp_project_db"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Java 25
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 25
+
+      - name: Cache Gradle packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: ${{ runner.os }}-gradle-
+
+      - name: Build and Test
+        env:
+          SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/bootcamp_project_db
+          SPRING_DATASOURCE_USERNAME: bootcamp_app_user
+          SPRING_DATASOURCE_PASSWORD: ChangeMe123!
+        run: ./gradlew build
